@@ -3,6 +3,8 @@ package com.prj.sns_today.domain.articles.api;
 import com.prj.sns_today.domain.articles.application.ArticleService;
 import com.prj.sns_today.domain.articles.dto.request.PostArticleRequest;
 import com.prj.sns_today.domain.articles.dto.response.ArticleResponse;
+import com.prj.sns_today.domain.like.application.LikeService;
+import com.prj.sns_today.domain.like.domain.Like;
 import com.prj.sns_today.global.response.ApiResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArticleApiController {
 
   private final ArticleService articleService;
+  private final LikeService likeService;
 
   @PostMapping
   public void postArticle(Authentication authentication, @RequestBody PostArticleRequest request) {
@@ -47,5 +50,15 @@ public class ArticleApiController {
   @GetMapping
   public ApiResponse<List<ArticleResponse>> getArticles() {
     return ApiResponse.success(articleService.getArticles());
+  }
+
+  @PostMapping("/{articleId}/like")
+  public void executeLike(@PathVariable Long articleId, Authentication authenticationa) {
+    likeService.executeLike(articleId, authenticationa);
+  }
+
+  @DeleteMapping("/{articleId}/unLike")
+  public void unExecuteLike(@PathVariable Long articleId, Authentication authentication) {
+    likeService.unExecute(articleId, authentication);
   }
 }

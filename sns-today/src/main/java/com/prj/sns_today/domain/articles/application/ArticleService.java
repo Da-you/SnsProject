@@ -4,6 +4,7 @@ import com.prj.sns_today.domain.articles.domain.Article;
 import com.prj.sns_today.domain.articles.dto.request.PostArticleRequest;
 import com.prj.sns_today.domain.articles.dto.response.ArticleResponse;
 import com.prj.sns_today.domain.articles.repository.ArticleRepository;
+import com.prj.sns_today.domain.like.repository.LikeRepository;
 import com.prj.sns_today.domain.users.domain.User;
 import com.prj.sns_today.domain.users.repository.UserRepository;
 import com.prj.sns_today.global.exception.ApplicationException;
@@ -21,6 +22,7 @@ public class ArticleService {
 
   private final ArticleRepository articleRepository;
   private final UserRepository userRepository;
+  private final LikeRepository likeRepository;
 
 
   @Transactional
@@ -63,21 +65,22 @@ public class ArticleService {
     articleRepository.delete(article);
   }
 
-
+  // Todo :  need isLike
   @Transactional(readOnly = true)
   public ArticleResponse getArticleDetails(Long articleId) {
     Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND));
     return new ArticleResponse(articleId, article.getUser().getUsername(), article.getTitle(),
-        article.getContent());
+        article.getContent(), false);
   }
 
+  // Todo :  need isLike
   @Transactional(readOnly = true)
   public List<ArticleResponse> getArticles() {
     List<Article> all = articleRepository.findAll();
 
     return all.stream()
         .map(article -> new ArticleResponse(article.getId(), article.getUser().getUsername(),
-            article.getTitle(), article.getContent())).collect(Collectors.toList());
+            article.getTitle(), article.getContent(), false)).collect(Collectors.toList());
   }
 }

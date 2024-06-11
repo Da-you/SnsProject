@@ -13,6 +13,6 @@ public class ArticleResponse {
   private String writer;
   private String title;
   private String content;
-
+  private boolean isLike;
 
 }
