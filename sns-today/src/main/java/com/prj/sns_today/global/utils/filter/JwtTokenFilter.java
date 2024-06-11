@@ -1,4 +1,4 @@
-package com.prj.sns_today.global.filter;
+package com.prj.sns_today.global.utils.filter;
 
 
 import com.prj.sns_today.domain.users.application.UserService;
@@ -46,7 +46,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         return;
       }
 
-
       // Todo : get username from token
       String username = JwtTokenUtils.getUsername(token, key);
 
@@ -54,7 +53,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
       User user = userService.loadByUsername(username);
 
       UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-          user, null, List.of(new SimpleGrantedAuthority(user.getRole().toString()))
+          user, null, user.getAuthorities()
       );
       authenticationToken.setDetails(new WebAuthenticationDetails(request));
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);

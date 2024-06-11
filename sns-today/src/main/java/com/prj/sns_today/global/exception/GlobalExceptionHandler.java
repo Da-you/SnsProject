@@ -20,9 +20,9 @@ public class GlobalExceptionHandler {
   }
 
   // 좀 더 큰 범위의 에러
-  @ExceptionHandler(RuntimeException.class)
-  public ResponseEntity<?> applicationHandler(RuntimeException e) {
-    log.info("error occurs {}", e.toString());
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<?> applicationHandler(IllegalArgumentException e) {
+    log.error("error occurs {}", e.toString());
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR.name()));
   }

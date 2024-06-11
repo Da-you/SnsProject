@@ -1,7 +1,8 @@
 package com.prj.sns_today.global.configuration;
 
 import com.prj.sns_today.domain.users.application.UserService;
-import com.prj.sns_today.global.filter.JwtTokenFilter;
+import com.prj.sns_today.global.exception.UnAuthenticationEntryPoint;
+import com.prj.sns_today.global.utils.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -30,8 +31,11 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
         .and()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
+        .exceptionHandling()
+        .authenticationEntryPoint(
+            new UnAuthenticationEntryPoint()) // 필터에서 error가 발생하면 exceptionHandling을 통해 별도의 엔트리 포인트로 보냄
+        .and()
         .addFilterBefore(new JwtTokenFilter(key, userService),
             UsernamePasswordAuthenticationFilter.class);
-
   }
 }

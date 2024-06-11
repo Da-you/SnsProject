@@ -11,9 +11,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @Table(name = "article")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -32,12 +34,16 @@ public class Article {
 
   private String content;
 
-  public static Article of(User user, String title, String content){
+  public static Article of(User user, String title, String content) {
     Article article = new Article();
-    article.user  =user;
+    article.user = user;
     article.title = title;
     article.content = content;
     return article;
+  }
 
+  public void updateArticle(String title, String content) {
+    this.title = title;
+    this.content = content;
   }
 }
