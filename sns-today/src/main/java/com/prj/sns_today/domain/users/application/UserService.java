@@ -28,9 +28,9 @@ public class UserService {
 
   @Transactional
   public void saveUser(UserSaveRequest request) {
-    userRepo.findByUsername(request.getUsername())
-        .orElseThrow(() -> new ApplicationException(
-            ErrorCode.DUPLICATED_USER_NAME));
+    if(userRepo.existsByUsername(request.getUsername())){
+      throw new ApplicationException(ErrorCode.DUPLICATED_USER_NAME);
+    }
     userRepo.save(User.of(request.getUsername(), encoder.encode(request.getPassword())));
   }
 
@@ -44,5 +44,10 @@ public class UserService {
     // 토큰 생성
     String token = JwtTokenUtils.generateToken(user.getUsername(), secretKey, expireTimedMs);
     return new UserResponse(token);
+  }
+
+  public User loadByUsername(String username) {
+    return userRepo.findByUsername(username)
+        .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
   }
 }
