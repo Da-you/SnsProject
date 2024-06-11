@@ -1,4 +1,4 @@
-package com.prj.sns_today.domain.articles.dto;
+package com.prj.sns_today.domain.articles.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
