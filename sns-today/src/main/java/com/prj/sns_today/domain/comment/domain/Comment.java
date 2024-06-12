@@ -2,6 +2,7 @@ package com.prj.sns_today.domain.comment.domain;
 
 import com.prj.sns_today.domain.articles.domain.Article;
 import com.prj.sns_today.domain.users.domain.User;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -20,7 +21,8 @@ public class Comment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long commentId;
+  @Column(name = "comment_id")
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "article_id")
@@ -39,5 +41,9 @@ public class Comment {
     comment.user = user;
     comment.content = content;
     return comment;
+  }
+
+  public void updateComment(String content) {
+    this.content = content;
   }
 }

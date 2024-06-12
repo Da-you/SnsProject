@@ -2,6 +2,7 @@ package com.prj.sns_today.domain.articles.api;
 
 import com.prj.sns_today.domain.articles.application.ArticleService;
 import com.prj.sns_today.domain.articles.dto.request.PostArticleRequest;
+import com.prj.sns_today.domain.articles.dto.response.ArticleDetailResponse;
 import com.prj.sns_today.domain.articles.dto.response.ArticleResponse;
 import com.prj.sns_today.domain.like.application.LikeService;
 import com.prj.sns_today.domain.like.domain.Like;
@@ -43,13 +44,13 @@ public class ArticleApiController {
   }
 
   @GetMapping("{articleId}")
-  public ApiResponse<ArticleResponse> getArticleDetails(@PathVariable Long articleId) {
+  public ApiResponse<ArticleDetailResponse> getArticleDetails(@PathVariable Long articleId) {
     return ApiResponse.success(articleService.getArticleDetails(articleId));
   }
 
   @GetMapping
-  public ApiResponse<List<ArticleResponse>> getArticles() {
-    return ApiResponse.success(articleService.getArticles());
+  public ApiResponse<List<ArticleResponse>> getArticles(Authentication authentication) {
+    return ApiResponse.success(articleService.getArticles(authentication));
   }
 
   @PostMapping("/{articleId}/like")

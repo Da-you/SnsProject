@@ -2,8 +2,12 @@ package com.prj.sns_today.domain.articles.application;
 
 import com.prj.sns_today.domain.articles.domain.Article;
 import com.prj.sns_today.domain.articles.dto.request.PostArticleRequest;
+import com.prj.sns_today.domain.articles.dto.response.ArticleDetailResponse;
 import com.prj.sns_today.domain.articles.dto.response.ArticleResponse;
 import com.prj.sns_today.domain.articles.repository.ArticleRepository;
+import com.prj.sns_today.domain.comment.domain.Comment;
+import com.prj.sns_today.domain.comment.dto.response.CommentResponse;
+import com.prj.sns_today.domain.comment.repository.CommentRepository;
 import com.prj.sns_today.domain.like.repository.LikeRepository;
 import com.prj.sns_today.domain.users.domain.User;
 import com.prj.sns_today.domain.users.repository.UserRepository;
@@ -23,6 +27,7 @@ public class ArticleService {
   private final ArticleRepository articleRepository;
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
+  private final CommentRepository commentRepository;
 
 
   @Transactional
@@ -65,22 +70,34 @@ public class ArticleService {
     articleRepository.delete(article);
   }
 
-  // Todo :  need isLike
   @Transactional(readOnly = true)
-  public ArticleResponse getArticleDetails(Long articleId) {
+  public ArticleDetailResponse getArticleDetails(Long articleId) {
     Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND));
-    return new ArticleResponse(articleId, article.getUser().getUsername(), article.getTitle(),
-        article.getContent(), false);
+    List<Comment> comments = commentRepository.findAllByArticle(article);
+
+    List<CommentResponse> res = comments.stream().map(
+        comment -> new CommentResponse(comment.getId(), comment.getUser().getUsername(),
+            comment.getContent())).collect(
+        Collectors.toList());
+
+    return new ArticleDetailResponse(articleId, article.getUser().getUsername(), article.getTitle(),
+        article.getContent(), res);
   }
 
-  // Todo :  need isLike
+  // Todo :  need isLike ans user information
   @Transactional(readOnly = true)
-  public List<ArticleResponse> getArticles() {
+  public List<ArticleResponse> getArticles(Authentication authentication) {
+    User user = userRepository.findByUsername(authentication.getName())
+        .orElseThrow(() -> new ApplicationException(
+            ErrorCode.USER_NOT_FOUND));
+
     List<Article> all = articleRepository.findAll();
 
     return all.stream()
         .map(article -> new ArticleResponse(article.getId(), article.getUser().getUsername(),
-            article.getTitle(), article.getContent(), false)).collect(Collectors.toList());
+            article.getTitle(), article.getContent(),
+            likeRepository.existsByUserAndArticle(user, article)))
+        .collect(Collectors.toList());
   }
 }
