@@ -30,6 +30,10 @@ public class LikeService {
 
     Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND));
+    Like like = likeRepository.findByUserAndArticle(user, article);
+    if (like != null) {
+      throw new ApplicationException(ErrorCode.ARTICLE_LIKE_EXCEPTION);
+    }
     likeRepository.save(Like.executeLike(article, user));
   }
 
@@ -42,7 +46,7 @@ public class LikeService {
         .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND));
     Like like = likeRepository.findByUserAndArticle(user, article);
     if (like == null) {
-      throw new ApplicationException(ErrorCode.INTERNAL_SERVER_ERROR); // Todo : 예외 추가하여 변경 필요
+      throw new ApplicationException(ErrorCode.ARTICLE_LIKE_EXCEPTION);
     } else {
       likeRepository.delete(like);
     }

@@ -13,7 +13,8 @@ public enum ErrorCode {
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "40401", "Username is not found"),
   INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "40102", "Token is invalid"),
   ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "40402", "Article is not found"),
-  INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "40103", "Permission is invalid");
+  INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "40103", "Permission is invalid"),
+  ARTICLE_LIKE_EXCEPTION(HttpStatus.BAD_REQUEST, "40001", "Article is already like or disLike ");
 
   // error code에 넣어줄 필드를 정의
   private HttpStatus status; // error의 http status 값

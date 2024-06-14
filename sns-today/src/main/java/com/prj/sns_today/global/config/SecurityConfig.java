@@ -1,4 +1,4 @@
-package com.prj.sns_today.global.configuration;
+package com.prj.sns_today.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,5 +11,6 @@ public class SecurityConfig {
   public BCryptPasswordEncoder encodedPassword(){
     return new BCryptPasswordEncoder();
   }
+
 
 }

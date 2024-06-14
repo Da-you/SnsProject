@@ -7,8 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
 
-public class UnAuthenticationEntryPoint implements AuthenticationEntryPoint {
+// 유효햔 자격증명을 제공하지 않고 접근시 401 에러를 보내기 위한 엔트리 포인트
+@Component
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response,

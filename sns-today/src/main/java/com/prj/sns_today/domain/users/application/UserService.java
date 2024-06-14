@@ -19,16 +19,13 @@ public class UserService {
 
   private final UserRepository userRepo;
   private final BCryptPasswordEncoder encoder;
-
+  private final JwtTokenUtils tokenUtils;
   @Value("${jwt.secret-key}")
   private String secretKey;
 
-  @Value("${jwt.token.expired-time-ms}")
-  private Long expireTimedMs;
-
   @Transactional
   public void saveUser(UserSaveRequest request) {
-    if(userRepo.existsByUsername(request.getUsername())){
+    if (userRepo.existsByUsername(request.getUsername())) {
       throw new ApplicationException(ErrorCode.DUPLICATED_USER_NAME);
     }
     userRepo.save(User.of(request.getUsername(), encoder.encode(request.getPassword())));
@@ -42,12 +39,12 @@ public class UserService {
       throw new ApplicationException(ErrorCode.INVALID_PASSWORD);
     }
     // 토큰 생성
-    String token = JwtTokenUtils.generateToken(user.getUsername(), secretKey, expireTimedMs);
+    String token = tokenUtils.generateToken(user.getId(), secretKey);
     return new UserResponse(token);
   }
 
-  public User loadByUsername(String username) {
-    return userRepo.findByUsername(username)
+  public User loadBySub(Long sub) {
+    return userRepo.findById(sub)
         .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
   }
 }
