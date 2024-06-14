@@ -6,5 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Role {
-ADMIN,USER
+ADMIN("ADMIN"),USER("USER");
+private final String code;
 }

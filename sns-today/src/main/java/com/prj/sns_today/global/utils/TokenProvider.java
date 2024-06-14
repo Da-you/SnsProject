@@ -20,14 +20,15 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class JwtTokenUtils {
+public class TokenProvider {
 
   @Value("${jwt.secret-key}")
   private String key;
   private final String ROLES = "roles";
 
   private final long ACCESS_TOKEN_EXPIRED_TIME = 7 * 24 * 60 * 60 * 1000L; // 7 days
-//  private final long ACCESS_TOKEN_EXPIRED_TIME = 10L; // 7 days
+  private final long REFRESH_TOKEN_EXPIRED_TIME = 30 * 24 * 60 * 60 * 1000L; // 1 months
+  ; // 7 days
 
   // 토큰에 sub(userId) , key(암호화시 이용하는 키)를 저장하며 sub를 통해 사용자 확인 ㅁ
   public String generateToken(Long sub, String role) {
@@ -41,6 +42,29 @@ public class JwtTokenUtils {
         .signWith(getKey(key), SignatureAlgorithm.HS256)
         //.signWith(getKey(key)) // 0.12.5 버전
         .compact();
+  }
+// accessToken, refreshToken과 accessToken 유효시간을 같이 관리하기 위해 TokenInfo DTO를 생성
+  public TokenInfo generateTokenV1(Long sub, String role) {
+    Claims claims = Jwts.claims().setSubject(sub.toString());
+    claims.put(ROLES, role);
+
+    Date now = new Date();
+
+    String accessToken = Jwts.builder().setClaims(claims)
+        .setIssuedAt(now)
+        .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRED_TIME))
+        .signWith(getKey(key), SignatureAlgorithm.HS256)
+        //.signWith(getKey(key)) // 0.12.5 버전
+        .compact();
+
+    String refreshToken = Jwts.builder()
+        .setSubject(sub.toString())
+        .setExpiration(new Date((now.getTime() + REFRESH_TOKEN_EXPIRED_TIME)))
+        .signWith(getKey(key), SignatureAlgorithm.HS256)
+        .compact();
+
+    return new TokenInfo(accessToken, refreshToken, ACCESS_TOKEN_EXPIRED_TIME);
+
   }
 
 

@@ -3,8 +3,8 @@ package com.prj.sns_today.global.config;
 import com.prj.sns_today.domain.users.application.UserService;
 import com.prj.sns_today.global.exception.CustomAccessDeniedHandler;
 import com.prj.sns_today.global.exception.CustomAuthenticationEntryPoint;
-import com.prj.sns_today.global.utils.JwtTokenUtils;
-import com.prj.sns_today.global.utils.filter.JwtTokenFilter;
+import com.prj.sns_today.global.utils.TokenProvider;
+import com.prj.sns_today.global.utils.filter.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
   private final UserService userService;
-  private final JwtTokenUtils utils;
+  private final TokenProvider provider;
 
 
   @Value("${jwt.secret-key}")
@@ -42,7 +42,7 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
             new CustomAuthenticationEntryPoint()) // 필터에서 error가 발생하면 exceptionHandling을 통해 별도의 엔트리 포인트로 보냄
         .accessDeniedHandler(new CustomAccessDeniedHandler())
         .and()
-        .addFilterBefore(new JwtTokenFilter(key, userService, utils),
+        .addFilterBefore(new JwtFilter(key, userService, provider),
             UsernamePasswordAuthenticationFilter.class);
   }
 }

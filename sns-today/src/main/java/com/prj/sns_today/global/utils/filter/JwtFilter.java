@@ -4,7 +4,7 @@ package com.prj.sns_today.global.utils.filter;
 import com.prj.sns_today.domain.users.application.UserService;
 import com.prj.sns_today.domain.users.domain.User;
 import com.prj.sns_today.global.utils.CustomUserDetail;
-import com.prj.sns_today.global.utils.JwtTokenUtils;
+import com.prj.sns_today.global.utils.TokenProvider;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,11 +20,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter {
 
   private final String key;
   private final UserService userService;
-  private final JwtTokenUtils utils;
+  private final TokenProvider provider;
 
 
   @Override
@@ -42,13 +42,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
       final String token = header.split(" ")[1].trim();
 
       // Todo : check token is valid
-      if (!utils.validateToken(token, key)) {
+      if (!provider.validateToken(token, key)) {
         log.error("token is invalid");
         filterChain.doFilter(request, response);
         return;
       }
       // Todo : get id from token
-      Long sub = JwtTokenUtils.getSubject(token, key);
+      Long sub = TokenProvider.getSubject(token, key);
 
       // Todo : check the user is valid
       User user = userService.loadBySub(sub);
