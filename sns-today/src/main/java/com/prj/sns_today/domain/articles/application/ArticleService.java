@@ -32,20 +32,18 @@ public class ArticleService {
 
   @Transactional
   public void postArticle(
-      Authentication authentication, PostArticleRequest request) {
-    User user = userRepository.findByUsername(authentication.getName())
-        .orElseThrow(() -> new ApplicationException(
-            ErrorCode.USER_NOT_FOUND));
+      Long  currentId, PostArticleRequest request) {
+    User user = userRepository.findById(currentId)
+        .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
     articleRepository.save(Article.of(user, request.getTitle(), request.getContent()));
   }
 
 
   @Transactional
-  public void updateArticle(Long articleId, Authentication authentication,
+  public void updateArticle(Long articleId, Long currentId,
       PostArticleRequest request) {
-    User user = userRepository.findByUsername(authentication.getName())
-        .orElseThrow(() -> new ApplicationException(
-            ErrorCode.USER_NOT_FOUND));
+    User user = userRepository.findById(currentId)
+        .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
     Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND)
         );
@@ -57,10 +55,9 @@ public class ArticleService {
 
 
   @Transactional
-  public void deleteArticle(Long articleId, Authentication authentication) {
-    User user = userRepository.findByUsername(authentication.getName())
-        .orElseThrow(() -> new ApplicationException(
-            ErrorCode.USER_NOT_FOUND));
+  public void deleteArticle(Long articleId, Long currentId ) {
+    User user = userRepository.findById(currentId)
+        .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
     Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND)
         );
@@ -87,10 +84,9 @@ public class ArticleService {
 
   // Todo :  need isLike ans user information
   @Transactional(readOnly = true)
-  public List<ArticleResponse> getArticles(Authentication authentication) {
-    User user = userRepository.findByUsername(authentication.getName())
-        .orElseThrow(() -> new ApplicationException(
-            ErrorCode.USER_NOT_FOUND));
+  public List<ArticleResponse> getArticles(Long currentId) {
+    User user = userRepository.findById(currentId)
+        .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
 
     List<Article> all = articleRepository.findAll();
 

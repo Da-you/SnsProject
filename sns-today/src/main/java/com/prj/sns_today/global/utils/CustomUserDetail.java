@@ -35,7 +35,7 @@ private User user;
 
   @Override
   public String getUsername() {
-    return "";
+    return this.userId.toString();
   }
 
   @Override

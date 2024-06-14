@@ -6,6 +6,7 @@ import com.prj.sns_today.domain.articles.dto.response.ArticleDetailResponse;
 import com.prj.sns_today.domain.articles.dto.response.ArticleResponse;
 import com.prj.sns_today.domain.like.application.LikeService;
 import com.prj.sns_today.domain.like.domain.Like;
+import com.prj.sns_today.global.annotation.CurrentUser;
 import com.prj.sns_today.global.response.ApiResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +29,19 @@ public class ArticleApiController {
   private final LikeService likeService;
 
   @PostMapping
-  public void postArticle(Authentication authentication, @RequestBody PostArticleRequest request) {
-    articleService.postArticle(authentication, request);
+  public void postArticle(@CurrentUser Long currentId, @RequestBody PostArticleRequest request) {
+    articleService.postArticle(currentId, request);
   }
 
   @PatchMapping("/{articleId}")
-  public void updateArticle(@PathVariable Long articleId, Authentication authentication,
+  public void updateArticle(@PathVariable Long articleId, @CurrentUser Long currentId,
       PostArticleRequest request) {
-    articleService.updateArticle(articleId, authentication, request);
+    articleService.updateArticle(articleId, currentId, request);
   }
 
   @DeleteMapping("/{articleId}")
-  public void deleteArticle(@PathVariable Long articleId, Authentication authentication) {
-    articleService.deleteArticle(articleId, authentication);
+  public void deleteArticle(@PathVariable Long articleId, @CurrentUser Long currentId) {
+    articleService.deleteArticle(articleId, currentId);
   }
 
   @GetMapping("{articleId}")
@@ -49,17 +50,17 @@ public class ArticleApiController {
   }
 
   @GetMapping
-  public ApiResponse<List<ArticleResponse>> getArticles(Authentication authentication) {
-    return ApiResponse.success(articleService.getArticles(authentication));
+  public ApiResponse<List<ArticleResponse>> getArticles(@CurrentUser Long currentId) {
+    return ApiResponse.success(articleService.getArticles(currentId));
   }
 
   @PostMapping("/{articleId}/like")
-  public void executeLike(@PathVariable Long articleId, Authentication authenticationa) {
-    likeService.executeLike(articleId, authenticationa);
+  public void executeLike(@PathVariable Long articleId, @CurrentUser Long currentId) {
+    likeService.executeLike(articleId, currentId);
   }
 
   @DeleteMapping("/{articleId}/unLike")
-  public void unExecuteLike(@PathVariable Long articleId, Authentication authentication) {
-    likeService.unExecute(articleId, authentication);
+  public void unExecuteLike(@PathVariable Long articleId, @CurrentUser Long currentId) {
+    likeService.unExecute(articleId, currentId);
   }
 }

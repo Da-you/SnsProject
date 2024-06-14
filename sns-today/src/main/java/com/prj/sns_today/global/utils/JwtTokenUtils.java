@@ -35,7 +35,6 @@ public class JwtTokenUtils {
     claims.setSubject(sub.toString());
     claims.put(ROLES, role);
     Date now = new Date();
-
     return Jwts.builder().setClaims(claims)
         .setIssuedAt(now)
         .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRED_TIME))
@@ -75,9 +74,8 @@ public class JwtTokenUtils {
   // 어디서 검증을 해주는 것인가.
   public boolean validateToken(String token, String key) {
     try {
-      Claims claims = parseClaims(token, key);
-      log.info(String.valueOf(claims.getNotBefore()));
-      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+      parseClaims(token, key);
+//      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 //      Jwts.parser().verifyWith(key).build().parseSignedClaims(compactJws);
       return true;
     } catch (SecurityException | MalformedJwtException e) {

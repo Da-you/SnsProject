@@ -2,6 +2,7 @@ package com.prj.sns_today.domain.comment.api;
 
 import com.prj.sns_today.domain.comment.application.CommentService;
 import com.prj.sns_today.domain.comment.dto.request.PostCommentRequest;
+import com.prj.sns_today.global.annotation.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,20 +21,20 @@ public class CommentApiController {
   private final CommentService commentService;
 
   @PostMapping("/{articleId}")
-  public void postComment(@PathVariable Long articleId, Authentication authentication,
+  public void postComment(@PathVariable Long articleId,@CurrentUser Long currentId,
       @RequestBody PostCommentRequest request) {
-    commentService.postComment(articleId, authentication, request);
+    commentService.postComment(articleId, currentId, request);
   }
 
   @PatchMapping("/{articleId}")
-  public void updateComment(@PathVariable Long articleId, Authentication authentication,
+  public void updateComment(@PathVariable Long articleId, @CurrentUser Long currentId,
       @RequestBody PostCommentRequest request) {
-    commentService.updateComment(articleId, authentication, request);
+    commentService.updateComment(articleId, currentId, request);
   }
 
   @DeleteMapping("/{articleId}")
-  public void updateComment(@PathVariable Long articleId, Authentication authentication) {
-    commentService.deleteComment(articleId, authentication);
+  public void updateComment(@PathVariable Long articleId, @CurrentUser Long currentId) {
+    commentService.deleteComment(articleId, currentId);
   }
 
 }

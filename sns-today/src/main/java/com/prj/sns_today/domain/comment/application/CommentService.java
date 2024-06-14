@@ -10,7 +10,6 @@ import com.prj.sns_today.domain.users.repository.UserRepository;
 import com.prj.sns_today.global.exception.ApplicationException;
 import com.prj.sns_today.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +22,10 @@ public class CommentService {
   private final ArticleRepository articleRepository;
 
   @Transactional
-  public void postComment(Long articleId, Authentication authentication,
+  public void postComment(Long articleId, Long currentId,
       PostCommentRequest request) {
-    User user = userRepository.findByUsername(authentication.getName())
-        .orElseThrow(() -> new ApplicationException(
-            ErrorCode.USER_NOT_FOUND));
+    User user = userRepository.findById(currentId).orElseThrow(()
+        -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
     Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND)
         );
@@ -35,27 +33,25 @@ public class CommentService {
   }
 
   @Transactional
-  public void updateComment(Long commentId, Authentication authentication,
+  public void updateComment(Long commentId, Long currentId,
       PostCommentRequest request) {
-    User user = userRepository.findByUsername(authentication.getName())
-        .orElseThrow(() -> new ApplicationException(
-            ErrorCode.USER_NOT_FOUND));
+    User user = userRepository.findById(currentId).orElseThrow(()
+        -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
 
     Comment comment = commentRepository.findByIdAndUser(commentId, user)
-        .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND));
+        .orElseThrow(() -> new ApplicationException(ErrorCode.COMMENT_NOT_FOUND));
 
     comment.updateComment(request.getContent());
   }
 
 
   @Transactional
-  public void deleteComment(Long commentId, Authentication authentication) {
-    User user = userRepository.findByUsername(authentication.getName())
-        .orElseThrow(() -> new ApplicationException(
-            ErrorCode.USER_NOT_FOUND));
+  public void deleteComment(Long commentId, Long currentId) {
+    User user = userRepository.findById(currentId).orElseThrow(()
+        -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
 
     Comment comment = commentRepository.findByIdAndUser(commentId, user)
-        .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND));
+        .orElseThrow(() -> new ApplicationException(ErrorCode.COMMENT_NOT_FOUND));
 
     commentRepository.delete(comment);
   }

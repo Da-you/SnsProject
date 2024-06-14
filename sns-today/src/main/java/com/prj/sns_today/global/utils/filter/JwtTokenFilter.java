@@ -42,7 +42,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
       final String token = header.split(" ")[1].trim();
 
       // Todo : check token is valid
-      if (utils.validateToken(token, key)) {
+      if (!utils.validateToken(token, key)) {
         log.error("token is invalid");
         filterChain.doFilter(request, response);
         return;

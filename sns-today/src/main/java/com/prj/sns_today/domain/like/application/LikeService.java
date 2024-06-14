@@ -23,10 +23,9 @@ public class LikeService {
   private final LikeRepository likeRepository;
 
   @Transactional
-  public void executeLike(Long articleId, Authentication authentication) {
-    User user = userRepository.findByUsername(authentication.getName())
-        .orElseThrow(() -> new ApplicationException(
-            ErrorCode.USER_NOT_FOUND));
+  public void executeLike(Long articleId, Long currentId) {
+    User user = userRepository.findById(currentId).orElseThrow(()
+        -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
 
     Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND));
@@ -38,10 +37,9 @@ public class LikeService {
   }
 
   @Transactional
-  public void unExecute(Long articleId, Authentication authentication) {
-    User user = userRepository.findByUsername(authentication.getName())
-        .orElseThrow(() -> new ApplicationException(
-            ErrorCode.USER_NOT_FOUND));
+  public void unExecute(Long articleId, Long currentId) {
+    User user = userRepository.findById(currentId).orElseThrow(()
+        -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
     Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND));
     Like like = likeRepository.findByUserAndArticle(user, article);
