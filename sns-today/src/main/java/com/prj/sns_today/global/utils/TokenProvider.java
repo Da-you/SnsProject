@@ -43,7 +43,8 @@ public class TokenProvider {
         //.signWith(getKey(key)) // 0.12.5 버전
         .compact();
   }
-// accessToken, refreshToken과 accessToken 유효시간을 같이 관리하기 위해 TokenInfo DTO를 생성
+
+  // accessToken, refreshToken과 accessToken 유효시간을 같이 관리하기 위해 TokenInfo DTO를 생성
   public TokenInfo generateTokenV1(Long sub, String role) {
     Claims claims = Jwts.claims().setSubject(sub.toString());
     claims.put(ROLES, role);
@@ -113,6 +114,10 @@ public class TokenProvider {
       log.error("잘못된 토큰입니다.");
     }
     return false;
+  }
+
+  public Long getRefreshTokenValidTime() {
+    return this.REFRESH_TOKEN_EXPIRED_TIME;
   }
 
 
