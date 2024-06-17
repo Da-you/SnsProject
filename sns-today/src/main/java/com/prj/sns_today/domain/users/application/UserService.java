@@ -62,7 +62,7 @@ public class UserService {
     Long userId = TokenProvider.getSubject(request.getRefreshToken(), secretKey);
 
     String refreshToken = redisService.getRefreshToken(userId);
-    if (refreshToken == null || refreshToken.equals(request.getRefreshToken())) {
+    if (refreshToken == null || !refreshToken.equals(request.getRefreshToken())) {
       throw new ApplicationException(ErrorCode.INVALID_TOKEN);
     }
     User user = loadBySub(userId);
