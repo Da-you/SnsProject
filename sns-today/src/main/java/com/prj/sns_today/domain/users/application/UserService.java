@@ -56,12 +56,20 @@ public class UserService {
     return userRepo.findById(sub)
         .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
   }
+// Todo : logout
+  public String logout(Long userId) {
+
+    String refreshToken = redisService.getRefreshToken(userId);
+    redisService.setBlacklist(userId, refreshToken);
+    return "로그아웃 되었습니다.";
+  }
 
   // Todo : token reissue
   public TokenInfo reissueToken(TokenReissueRequest request) {
     Long userId = TokenProvider.getSubject(request.getRefreshToken(), secretKey);
 
     String refreshToken = redisService.getRefreshToken(userId);
+
     if (refreshToken == null || !refreshToken.equals(request.getRefreshToken())) {
       throw new ApplicationException(ErrorCode.INVALID_TOKEN);
     }

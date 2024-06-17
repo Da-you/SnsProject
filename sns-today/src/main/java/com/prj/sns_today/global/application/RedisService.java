@@ -27,4 +27,14 @@ public class RedisService {
         .set(key, refreshToken, timeoutMillis, TimeUnit.MILLISECONDS);
   }
 
+  public String getBlacklist(Long userId) {
+    String key = String.format(TOKEN_KEY_FORMAT, userId);
+    return redisStringTemplate.opsForValue().get(key);
+  }
+
+  public void setBlacklist(Long userId, String refreshToken) {
+    String key = String.format(TOKEN_KEY_FORMAT, userId);
+    redisStringTemplate.opsForValue().set(key, refreshToken);
+  }
+
 }
