@@ -2,6 +2,7 @@ package com.prj.sns_today.domain.comment.domain;
 
 import com.prj.sns_today.domain.articles.domain.Article;
 import com.prj.sns_today.domain.users.domain.User;
+import com.prj.sns_today.domain.users.model.BaseTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment {
+public class Comment extends BaseTime {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/articles")
@@ -28,11 +30,16 @@ public class ArticleApiController {
   private final ArticleService articleService;
   private final LikeService likeService;
 
+//  @PostMapping
+//  public void postArticle(@CurrentUser Long currentId, @RequestBody PostArticleRequest request) {
+//    articleService.postArticle(currentId, request);
+//  }
   @PostMapping
-  public void postArticle(@CurrentUser Long currentId, @RequestBody PostArticleRequest request) {
-    articleService.postArticle(currentId, request);
+  public void postArticle(@CurrentUser Long currentId,
+      @RequestPart PostArticleRequest request,
+      @RequestPart MultipartFile[] files) {
+    articleService.postArticle(currentId, request, files);
   }
-
   @PatchMapping("/{articleId}")
   public void updateArticle(@PathVariable Long articleId, @CurrentUser Long currentId,
       PostArticleRequest request) {

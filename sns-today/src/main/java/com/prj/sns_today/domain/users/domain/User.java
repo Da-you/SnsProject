@@ -1,6 +1,7 @@
 package com.prj.sns_today.domain.users.domain;
 
 import com.prj.sns_today.domain.users.model.Role;
+import com.prj.sns_today.domain.users.model.BaseTime;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseTime {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

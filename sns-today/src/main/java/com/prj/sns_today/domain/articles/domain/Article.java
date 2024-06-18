@@ -1,6 +1,7 @@
 package com.prj.sns_today.domain.articles.domain;
 
 import com.prj.sns_today.domain.users.domain.User;
+import com.prj.sns_today.domain.users.model.BaseTime;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "article")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Article {
+public class Article extends BaseTime {
 
 
   @Id

@@ -8,17 +8,22 @@ import com.prj.sns_today.domain.articles.repository.ArticleRepository;
 import com.prj.sns_today.domain.comment.domain.Comment;
 import com.prj.sns_today.domain.comment.dto.response.CommentResponse;
 import com.prj.sns_today.domain.comment.repository.CommentRepository;
+import com.prj.sns_today.domain.image.domain.Image;
+import com.prj.sns_today.domain.image.repository.ImageRepository;
 import com.prj.sns_today.domain.like.repository.LikeRepository;
 import com.prj.sns_today.domain.users.domain.User;
 import com.prj.sns_today.domain.users.repository.UserRepository;
+import com.prj.sns_today.global.application.S3UploadService;
 import com.prj.sns_today.global.exception.ApplicationException;
 import com.prj.sns_today.global.exception.ErrorCode;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -28,14 +33,31 @@ public class ArticleService {
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
   private final CommentRepository commentRepository;
+  private final ImageRepository imageRepository;
+  private final S3UploadService uploadService;
 
 
   @Transactional
   public void postArticle(
-      Long  currentId, PostArticleRequest request) {
+      Long currentId, PostArticleRequest request, MultipartFile[] files) {
     User user = userRepository.findById(currentId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
-    articleRepository.save(Article.of(user, request.getTitle(), request.getContent()));
+    List<String> images = new ArrayList<>();
+    try {
+      images = uploadService.uploadArticleImage(files);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    Article article = Article.of(user, request.getTitle(), request.getContent());
+    articleRepository.save(article);
+    List<Image> entities = new ArrayList<>();
+    if (images != null) {
+      for (int i = 0; i < images.size(); i++) {
+        Image entity = Image.of(article, images.get(i));
+        entities.add(entity);
+      }
+    }
+    imageRepository.saveAll(entities);
   }
 
 
@@ -55,7 +77,7 @@ public class ArticleService {
 
 
   @Transactional
-  public void deleteArticle(Long articleId, Long currentId ) {
+  public void deleteArticle(Long articleId, Long currentId) {
     User user = userRepository.findById(currentId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
     Article article = articleRepository.findById(articleId)

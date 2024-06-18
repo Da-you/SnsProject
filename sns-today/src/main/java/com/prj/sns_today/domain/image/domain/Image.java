@@ -1,45 +1,42 @@
-package com.prj.sns_today.domain.like.domain;
+package com.prj.sns_today.domain.image.domain;
 
 import com.prj.sns_today.domain.articles.domain.Article;
-import com.prj.sns_today.domain.users.domain.User;
 import com.prj.sns_today.domain.users.model.BaseTime;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@Table(name = "likes")
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Like extends BaseTime {
+public class Image extends BaseTime {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long likeId;
+  private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(name = "article_id")
   private Article article;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
-  private User user;
+  private String imagePath;
 
 
-  public static Like executeLike(Article article, User user) {
-    Like like = new Like();
-    like.article = article;
-    like.user = user;
-    return like;
+  public Image(Article article, String imagePath) {
+    this.article = article;
+    this.imagePath = imagePath;
   }
 
-
+  public static Image of(Article article, String imagePath) {
+    Image image = new Image();
+    image.article = article;
+    image.imagePath = imagePath;
+    return image;
+  }
 }
