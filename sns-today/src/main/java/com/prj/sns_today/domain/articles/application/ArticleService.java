@@ -18,6 +18,7 @@ import com.prj.sns_today.global.exception.ApplicationException;
 import com.prj.sns_today.global.exception.ErrorCode;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,7 @@ public class ArticleService {
 
   @Transactional
   public void updateArticle(Long articleId, Long currentId,
-      PostArticleRequest request) {
+      PostArticleRequest request, MultipartFile[] files) {
     User user = userRepository.findById(currentId)
         .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
     Article article = articleRepository.findById(articleId)
@@ -73,6 +74,7 @@ public class ArticleService {
       throw new ApplicationException(ErrorCode.INVALID_PERMISSION);
     }
     article.updateArticle(request.getTitle(), request.getContent());
+    // Todo : update article images
   }
 
 
@@ -104,7 +106,6 @@ public class ArticleService {
         article.getContent(), res);
   }
 
-  // Todo :  need isLike ans user information
   @Transactional(readOnly = true)
   public List<ArticleResponse> getArticles(Long currentId) {
     User user = userRepository.findById(currentId)
